@@ -3,7 +3,6 @@
 import pytest
 import jax
 import jax.numpy as jnp
-import numpy as np
 from noax.layers.spectral_conv import SpectralConvND
 
 
@@ -21,8 +20,7 @@ def test_spectral_conv_1d_initialization(rng_key):
     n_modes = [4]
     use_bias = True
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
 
     assert conv.in_channels == in_channels
     assert conv.out_channels == out_channels
@@ -40,8 +38,7 @@ def test_spectral_conv_1d_forward(rng_key):
     n_modes = [16]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
     x = jnp.ones((in_channels, length))
     y = conv(x)
 
@@ -73,8 +70,7 @@ def test_spectral_conv_1d_output_values(rng_key):
     n_modes = [8]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key, True)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key, True)
     x = jnp.ones((in_channels, 64))
     y = conv(x)
 
@@ -89,10 +85,12 @@ def test_spectral_conv_1d_bias(rng_key):
     out_channels = 3
     n_modes = [8]
 
-    conv_with_bias = SpectralConvND(in_channels, out_channels, n_modes, True,
-                                    rng_key, True)
-    conv_without_bias = SpectralConvND(in_channels, out_channels, n_modes,
-                                       False, rng_key, True)
+    conv_with_bias = SpectralConvND(
+        in_channels, out_channels, n_modes, True, rng_key, True
+    )
+    conv_without_bias = SpectralConvND(
+        in_channels, out_channels, n_modes, False, rng_key, True
+    )
 
     x = jnp.zeros((in_channels, 64))
     y_with_bias = conv_with_bias(x)
@@ -111,15 +109,18 @@ def test_spectral_conv_2d_initialization(rng_key):
     n_modes = [4, 4]
     use_bias = True
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
 
     assert conv.in_channels == in_channels
     assert conv.out_channels == out_channels
     assert conv.n_modes == n_modes
     assert conv.use_bias == use_bias
-    assert conv.weight.shape == (in_channels, out_channels, 8, 4
-                                 )  # 2*n_modes[0] for first dim
+    assert conv.weight.shape == (
+        in_channels,
+        out_channels,
+        8,
+        4,
+    )  # 2*n_modes[0] for first dim
     assert conv.bias.shape == (out_channels, 1, 1)
 
 
@@ -131,8 +132,7 @@ def test_spectral_conv_2d_forward(rng_key):
     n_modes = [4, 4]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
     x = jnp.ones((in_channels, h, w))
     y = conv(x)
 
@@ -153,8 +153,7 @@ def test_spectral_conv_2d_input_validation(rng_key):
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 32, 32),
-                     dtype=jnp.complex64)  # Complex input not allowed
+        x = jnp.ones((2, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
         conv(x)
 
 
@@ -165,8 +164,7 @@ def test_spectral_conv_2d_output_values(rng_key):
     n_modes = [4, 4]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
     x = jnp.ones((in_channels, 32, 32))
     y = conv(x)
 
@@ -181,10 +179,10 @@ def test_spectral_conv_2d_bias(rng_key):
     out_channels = 3
     n_modes = [4, 4]
 
-    conv_with_bias = SpectralConvND(in_channels, out_channels, n_modes, True,
-                                    rng_key)
-    conv_without_bias = SpectralConvND(in_channels, out_channels, n_modes,
-                                       False, rng_key, True)
+    conv_with_bias = SpectralConvND(in_channels, out_channels, n_modes, True, rng_key)
+    conv_without_bias = SpectralConvND(
+        in_channels, out_channels, n_modes, False, rng_key, True
+    )
 
     x = jnp.zeros((in_channels, 32, 32))
     y_with_bias = conv_with_bias(x)
@@ -203,15 +201,19 @@ def test_spectral_conv_3d_initialization(rng_key):
     n_modes = [4, 4, 4]
     use_bias = True
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
 
     assert conv.in_channels == in_channels
     assert conv.out_channels == out_channels
     assert conv.n_modes == n_modes
     assert conv.use_bias == use_bias
-    assert conv.weight.shape == (in_channels, out_channels, 8, 8, 4
-                                 )  # 2*n_modes for first two dims
+    assert conv.weight.shape == (
+        in_channels,
+        out_channels,
+        8,
+        8,
+        4,
+    )  # 2*n_modes for first two dims
     assert conv.bias.shape == (out_channels, 1, 1, 1)
 
 
@@ -223,8 +225,7 @@ def test_spectral_conv_3d_forward(rng_key):
     n_modes = [4, 4, 4]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
     x = jnp.ones((in_channels, d, h, w))
     y = conv(x)
 
@@ -245,8 +246,7 @@ def test_spectral_conv_3d_input_validation(rng_key):
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 32, 32, 32),
-                     dtype=jnp.complex64)  # Complex input not allowed
+        x = jnp.ones((2, 32, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
         conv(x)
 
 
@@ -257,8 +257,7 @@ def test_spectral_conv_3d_output_values(rng_key):
     n_modes = [4, 4, 4]
     use_bias = False
 
-    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias,
-                          rng_key)
+    conv = SpectralConvND(in_channels, out_channels, n_modes, use_bias, rng_key)
     x = jnp.ones((in_channels, 32, 32, 32))
     y = conv(x)
 
@@ -273,10 +272,10 @@ def test_spectral_conv_3d_bias(rng_key):
     out_channels = 3
     n_modes = [4, 4, 4]
 
-    conv_with_bias = SpectralConvND(in_channels, out_channels, n_modes, True,
-                                    rng_key)
-    conv_without_bias = SpectralConvND(in_channels, out_channels, n_modes,
-                                       False, rng_key, True)
+    conv_with_bias = SpectralConvND(in_channels, out_channels, n_modes, True, rng_key)
+    conv_without_bias = SpectralConvND(
+        in_channels, out_channels, n_modes, False, rng_key, True
+    )
 
     x = jnp.zeros((in_channels, 32, 32, 32))
     y_with_bias = conv_with_bias(x)

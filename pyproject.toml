@@ -5,6 +5,7 @@ description = "Jax implementation of neural operators"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beartype>=0.20.2",
     "equinox>=0.12.1",
     "jax==0.5.3",
     "neuraloperator>=1.0.2",
@@ -17,3 +18,10 @@ dev = [
 lint = [
     "ruff>=0.11.7",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff.lint]
+ignore = ["F722"]
