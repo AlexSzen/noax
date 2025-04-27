@@ -1,0 +1,17 @@
+[project]
+name = "noax"
+version = "0.1.0"
+description = "Jax implementation of neural operators"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "equinox>=0.12.1",
+    "jax==0.5.3",
+    "neuraloperator>=1.0.2",
+    "pytest>=8.3.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
