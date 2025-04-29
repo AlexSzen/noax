@@ -1,8 +1,10 @@
 """Channel mixing layers for neural networks.
 
 This module implements channel mixing layers that operate on multi-channel data.
-It provides both linear and MLP-based channel mixing operations, which are commonly
-used in neural networks for processing multi-channel inputs.
+It provides both linear and MLP-based channel mixing operations.
+
+The implementation follows the principles from:
+[1] Li et al. "Fourier Neural Operator for Parametric Partial Differential Equations"
 
 The implementation includes:
 1. ChannelMixingLinear: A simple linear transformation across channels
