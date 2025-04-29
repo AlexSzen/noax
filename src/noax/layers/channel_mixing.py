@@ -110,11 +110,13 @@ class ChannelMixingLinear(eqx.Module):
 
 
 class ChannelMixingMLP(eqx.Module):
-    """Multi-layer perceptron for channel mixing.
+    r"""Multi-layer perceptron for channel mixing.
 
     This layer implements a multi-layer perceptron that operates on channels
     while preserving spatial dimensions. It consists of multiple linear layers
     with non-linear activations in between.
+    It corresponds to P in figure 2.a. of [1], i.e.
+    P : \mathbb{R}^{d_a} \to \mathbb{R}^{d_v}.
 
     Attributes:
         layers: List of linear channel mixing layers
@@ -191,7 +193,7 @@ class ChannelMixingMLP(eqx.Module):
     def __call__(
         self, x: Float[Array, " in_channels *spatial_dims"]
     ) -> Float[Array, " out_channels *spatial_dims"]:
-        r"""Apply MLP channel mixing to input.
+        """Apply MLP channel mixing to input.
 
         Args:
             x: Input tensor of shape (in_channels, *spatial_dims)
@@ -200,8 +202,6 @@ class ChannelMixingMLP(eqx.Module):
             Output tensor of shape (out_channels, *spatial_dims)
             The output maintains the same spatial dimensions as input
             but with transformed channel dimension.
-            It corresponds to P in figure 2.a. of [1], i.e.
-            P : \mathbb{R}^{d_a} \to \mathbb{R}^{d_v}.
 
         Raises if debug is True:
             AssertionError: If input dimensions don't match layer dimensions
