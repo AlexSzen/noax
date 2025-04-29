@@ -200,7 +200,7 @@ class ChannelMixingMLP(eqx.Module):
             Output tensor of shape (out_channels, *spatial_dims)
             The output maintains the same spatial dimensions as input
             but with transformed channel dimension.
-            It corresponds to P in equation figure 2.a. of [1], i.e.
+            It corresponds to P in figure 2.a. of [1], i.e.
             P : \mathbb{R}^{d_a} \to \mathbb{R}^{d_v}.
 
         Raises if debug is True:
