@@ -19,10 +19,12 @@ from jaxtyping import Array, Float, PRNGKeyArray
 
 
 class ChannelMixingLinear(eqx.Module):
-    """Linear channel mixing layer.
+    r"""Linear channel mixing layer.
 
     This layer performs a linear transformation across channels while preserving
-    spatial dimensions.
+    spatial dimensions. It corresponds to W in equation (2) of [1], i.e.
+    W : \mathbb{R}^{d_v} \to \mathbb{R}^{d_v}.
+
 
     Attributes:
         weights: Linear transformation weights
@@ -189,7 +191,7 @@ class ChannelMixingMLP(eqx.Module):
     def __call__(
         self, x: Float[Array, " in_channels *spatial_dims"]
     ) -> Float[Array, " out_channels *spatial_dims"]:
-        """Apply MLP channel mixing to input.
+        r"""Apply MLP channel mixing to input.
 
         Args:
             x: Input tensor of shape (in_channels, *spatial_dims)
@@ -198,6 +200,8 @@ class ChannelMixingMLP(eqx.Module):
             Output tensor of shape (out_channels, *spatial_dims)
             The output maintains the same spatial dimensions as input
             but with transformed channel dimension.
+            It corresponds to P in equation figure 2.a. of [1], i.e.
+            P : \mathbb{R}^{d_a} \to \mathbb{R}^{d_v}.
 
         Raises if debug is True:
             AssertionError: If input dimensions don't match layer dimensions
