@@ -48,8 +48,9 @@ class ChannelMixingLinear(eqx.Module):
         self,
         in_channels: int,
         out_channels: int,
-        key: PRNGKeyArray,
         use_bias: bool = True,
+        *,
+        key: PRNGKeyArray,
         debug: bool = False,
     ) -> None:
         """Initialize the linear channel mixing layer.
@@ -57,8 +58,8 @@ class ChannelMixingLinear(eqx.Module):
         Args:
             in_channels: Number of input channels
             out_channels: Number of output channels
-            key: JAX PRNG key for weight initialization
             use_bias: Whether to use bias term
+            key: JAX PRNG key for weight initialization
             debug: Whether to run in debug mode
         """
         self.use_bias = use_bias
@@ -144,8 +145,9 @@ class ChannelMixingMLP(eqx.Module):
         out_channels: int,
         hidden_channels: int,
         activation: Callable,
-        key: PRNGKeyArray,
         use_bias: bool = True,
+        *,
+        key: PRNGKeyArray,
         debug: bool = False,
     ) -> None:
         """Initialize the MLP channel mixing layer.
@@ -174,20 +176,28 @@ class ChannelMixingMLP(eqx.Module):
 
         # Input layer
         self.layers.append(
-            ChannelMixingLinear(in_channels, hidden_channels, in_key, use_bias, debug)
+            ChannelMixingLinear(
+                in_channels, hidden_channels, use_bias, key=in_key, debug=debug
+            )
         )
 
         # Hidden layers
         for i in range(num_hidden_layers):
             self.layers.append(
                 ChannelMixingLinear(
-                    hidden_channels, hidden_channels, hidden_keys[i], use_bias, debug
+                    hidden_channels,
+                    hidden_channels,
+                    use_bias,
+                    key=hidden_keys[i],
+                    debug=debug,
                 )
             )
 
         # Output layer
         self.layers.append(
-            ChannelMixingLinear(hidden_channels, out_channels, out_key, use_bias, debug)
+            ChannelMixingLinear(
+                hidden_channels, out_channels, use_bias, key=out_key, debug=debug
+            )
         )
 
     def __call__(

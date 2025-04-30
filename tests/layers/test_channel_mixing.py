@@ -19,14 +19,19 @@ def test_channel_mixing_linear_initialization(rng_key):
     in_channels = 2
     out_channels = 3
     use_bias = True
-    debug = True
 
-    layer = ChannelMixingLinear(in_channels, out_channels, rng_key, use_bias, debug)
+    layer = ChannelMixingLinear(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
+    )
 
     assert layer.in_channels == in_channels
     assert layer.out_channels == out_channels
     assert layer.use_bias == use_bias
-    assert layer.debug == debug
+    assert layer.debug == True
     assert layer.weights.shape == (in_channels, out_channels)
     assert layer.bias.shape == (out_channels,)
 
@@ -37,9 +42,14 @@ def test_channel_mixing_linear_forward(rng_key):
     out_channels = 3
     spatial_dims = (32, 32)
     use_bias = False
-    debug = True
 
-    layer = ChannelMixingLinear(in_channels, out_channels, rng_key, use_bias, debug)
+    layer = ChannelMixingLinear(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
+    )
     x = jnp.ones((in_channels, *spatial_dims))
     y = layer(x)
 
@@ -49,7 +59,9 @@ def test_channel_mixing_linear_forward(rng_key):
 
 def test_channel_mixing_linear_input_validation(rng_key):
     """Test input validation for ChannelMixingLinear."""
-    layer = ChannelMixingLinear(2, 3, rng_key, False, debug=True)
+    layer = ChannelMixingLinear(
+        in_channels=2, out_channels=3, use_bias=False, key=rng_key, debug=True
+    )
 
     with pytest.raises(AssertionError):
         x = jnp.ones((3, 32, 32))  # Wrong number of input channels
@@ -66,7 +78,12 @@ def test_channel_mixing_linear_output_values(rng_key):
     out_channels = 1
     use_bias = False
 
-    layer = ChannelMixingLinear(in_channels, out_channels, rng_key, use_bias)
+    layer = ChannelMixingLinear(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        use_bias=use_bias,
+        key=rng_key,
+    )
     x = jnp.ones((in_channels, 32, 32))
     y = layer(x)
 
@@ -79,13 +96,20 @@ def test_channel_mixing_linear_bias(rng_key):
     """Test bias functionality in ChannelMixingLinear."""
     in_channels = 2
     out_channels = 3
-    debug = True
 
     layer_with_bias = ChannelMixingLinear(
-        in_channels, out_channels, rng_key, True, debug
+        in_channels=in_channels,
+        out_channels=out_channels,
+        use_bias=True,
+        key=rng_key,
+        debug=True,
     )
     layer_without_bias = ChannelMixingLinear(
-        in_channels, out_channels, rng_key, False, debug
+        in_channels=in_channels,
+        out_channels=out_channels,
+        use_bias=False,
+        key=rng_key,
+        debug=True,
     )
 
     x = jnp.zeros((in_channels, 32, 32))
@@ -102,7 +126,9 @@ def test_channel_mixing_linear_spatial_dimensions(rng_key):
     in_channels = 2
     out_channels = 3
 
-    layer = ChannelMixingLinear(in_channels, out_channels, rng_key)
+    layer = ChannelMixingLinear(
+        in_channels=in_channels, out_channels=out_channels, key=rng_key
+    )
 
     # Test 1D spatial dimensions
     x_1d = jnp.ones((in_channels, 64))
@@ -128,34 +154,33 @@ def test_channel_mixing_mlp_initialization(rng_key):
     out_channels = 3
     hidden_channels = 4
     use_bias = True
-    debug = True
 
     def activation(x):
         return jax.nn.relu(x)
 
     mlp = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
 
     assert mlp.num_hidden_layers == num_hidden_layers
     assert mlp.in_channels == in_channels
     assert mlp.out_channels == out_channels
     assert mlp.hidden_channels == hidden_channels
-    assert mlp.debug == debug
+    assert mlp.debug == True
     assert len(mlp.layers) == num_hidden_layers + 2  # input + hidden + output layers
     assert mlp.layers[0].in_channels == in_channels
     assert mlp.layers[0].out_channels == hidden_channels
     assert mlp.layers[-1].in_channels == hidden_channels
     assert mlp.layers[-1].out_channels == out_channels
     # Check debug flag is passed to all layers
-    assert all(layer.debug == debug for layer in mlp.layers)
+    assert all(layer.debug == True for layer in mlp.layers)
 
 
 def test_channel_mixing_mlp_forward(rng_key):
@@ -166,20 +191,19 @@ def test_channel_mixing_mlp_forward(rng_key):
     hidden_channels = 4
     spatial_dims = (32, 32)
     use_bias = False
-    debug = True
 
     def activation(x):
         return jax.nn.relu(x)
 
     mlp = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
     x = jnp.ones((in_channels, *spatial_dims))
     y = mlp(x)
@@ -194,7 +218,16 @@ def test_channel_mixing_mlp_input_validation(rng_key):
     def activation(x):
         return jax.nn.relu(x)
 
-    mlp = ChannelMixingMLP(2, 2, 3, 4, activation, rng_key, False, debug=True)
+    mlp = ChannelMixingMLP(
+        num_hidden_layers=2,
+        in_channels=2,
+        out_channels=3,
+        hidden_channels=4,
+        activation=activation,
+        use_bias=False,
+        key=rng_key,
+        debug=True,
+    )
 
     with pytest.raises(AssertionError):
         x = jnp.ones((3, 32, 32))  # Wrong number of input channels
@@ -217,13 +250,13 @@ def test_channel_mixing_mlp_output_values(rng_key):
         return jax.nn.relu(x)
 
     mlp = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        use_bias,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=use_bias,
+        key=rng_key,
     )
     x = jnp.ones((in_channels, 32, 32))
     y = mlp(x)
@@ -239,30 +272,29 @@ def test_channel_mixing_mlp_bias(rng_key):
     in_channels = 2
     out_channels = 3
     hidden_channels = 4
-    debug = True
 
     def activation(x):
         return jax.nn.relu(x)
 
     mlp_with_bias = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        True,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=True,
+        key=rng_key,
+        debug=True,
     )
     mlp_without_bias = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        False,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=False,
+        key=rng_key,
+        debug=True,
     )
 
     x = jnp.zeros((in_channels, 32, 32))
@@ -281,20 +313,19 @@ def test_channel_mixing_mlp_spatial_dimensions(rng_key):
     out_channels = 3
     hidden_channels = 4
     use_bias = True
-    debug = True
 
     def activation(x):
         return jax.nn.relu(x)
 
     mlp = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        activation,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=activation,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
 
     # Test 1D spatial dimensions
@@ -320,18 +351,17 @@ def test_channel_mixing_mlp_different_activations(rng_key):
     out_channels = 3
     hidden_channels = 4
     use_bias = True
-    debug = True
 
     # Test with ReLU
     mlp_relu = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        jax.nn.relu,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=jax.nn.relu,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
     x = jnp.ones((in_channels, 32, 32))
     y_relu = mlp_relu(x)
@@ -339,28 +369,28 @@ def test_channel_mixing_mlp_different_activations(rng_key):
 
     # Test with Sigmoid
     mlp_sigmoid = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        jax.nn.sigmoid,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=jax.nn.sigmoid,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
     y_sigmoid = mlp_sigmoid(x)
     assert y_sigmoid.shape == (out_channels, 32, 32)
 
     # Test with Tanh
     mlp_tanh = ChannelMixingMLP(
-        num_hidden_layers,
-        in_channels,
-        out_channels,
-        hidden_channels,
-        jax.nn.tanh,
-        rng_key,
-        use_bias,
-        debug,
+        num_hidden_layers=num_hidden_layers,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        hidden_channels=hidden_channels,
+        activation=jax.nn.tanh,
+        use_bias=use_bias,
+        key=rng_key,
+        debug=True,
     )
     y_tanh = mlp_tanh(x)
     assert y_tanh.shape == (out_channels, 32, 32)

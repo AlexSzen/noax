@@ -56,6 +56,7 @@ class SpectralConvND:
         out_channels: int,
         n_modes: List[int],
         use_bias: bool,
+        *,
         key: PRNGKeyArray,
         debug: bool = False,
     ) -> None:
