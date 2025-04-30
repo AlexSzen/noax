@@ -42,7 +42,7 @@ class FNO(eqx.Module):
         debug: Whether to run in debug mode (static)
     """
 
-    layers: List[FourierLayer]
+    fourier_layers: List[FourierLayer]
     lift_layer: ChannelMixingMLP
     proj_layer: ChannelMixingMLP
     num_layers: int = eqx.static_field()
@@ -124,9 +124,9 @@ class FNO(eqx.Module):
         key_fourier, key_lift, key_proj = jax.random.split(key, 3)
 
         # Initialize Fourier layers
-        self.layers = []
+        self.fourier_layers = []
         for _ in range(num_layers):
-            self.layers.append(
+            self.fourier_layers.append(
                 FourierLayer(
                     in_channels=self.hidden_channels,
                     out_channels=self.hidden_channels,
@@ -180,6 +180,6 @@ class FNO(eqx.Module):
         """
 
         x = self.lift_layer(x)
-        for layer in self.layers:
+        for layer in self.fourier_layers:
             x = layer(x)
         return self.proj_layer(x)

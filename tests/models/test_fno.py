@@ -50,7 +50,7 @@ def test_fno_initialization(rng_key):
     assert model.out_channels == out_channels
     assert model.hidden_channels == hidden_channels
     assert model.activation_fourier is activation_fourier
-    assert len(model.layers) == num_layers
+    assert len(model.fourier_layers) == num_layers
     assert isinstance(model.lift_layer, eqx.Module)
     assert isinstance(model.proj_layer, eqx.Module)
 
