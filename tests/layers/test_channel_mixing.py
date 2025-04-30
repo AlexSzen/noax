@@ -244,7 +244,7 @@ def test_channel_mixing_mlp_output_values(rng_key):
     in_channels = 1
     out_channels = 1
     hidden_channels = 4
-    use_bias = False
+    use_bias = True
 
     def activation(x):
         return jax.nn.relu(x)

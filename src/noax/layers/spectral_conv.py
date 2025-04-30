@@ -150,6 +150,10 @@ class SpectralConvND:
             assert x.shape[0] == self.in_channels, (
                 f"Input channels {x.shape[0]} doesn't match expected {self.in_channels}"
             )
+            assert len(spatial_dims) == len(self.n_modes), (
+                f"Number of spatial dimensions {len(spatial_dims)} does not match "
+                f"number of modes {len(self.n_modes)}"
+            )
             assert all(
                 s > 2 * m for s, m in zip(spatial_dims[:-1], self.n_modes[:-1])
             ), (

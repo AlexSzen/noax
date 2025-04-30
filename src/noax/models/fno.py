@@ -8,12 +8,12 @@ which projects the result to the output channel space.
 [1] Li et al. "Fourier Neural Operator for Parametric Partial Differential Equations"
 """
 
+from typing import List, Callable, Tuple
 import jax
 import equinox as eqx
 from jaxtyping import Float, Array, PRNGKeyArray
 from noax.layers.fourier_layer import FourierLayer
 from noax.layers.channel_mixing import ChannelMixingMLP
-from typing import List, Callable, Tuple
 
 
 class FNO(eqx.Module):
@@ -177,38 +177,7 @@ class FNO(eqx.Module):
             Output tensor of shape (out_channels, *spatial_dims)
             The output maintains the same spatial dimensions as input
             but transforms the channel dimension as specified.
-
-        Raises if debug is True:
-            AssertionError: If input dimensions don't match layer configurations
-            AssertionError: If input is not real-valued
         """
-        if self.debug:
-            # Validate input array
-            if not isinstance(x, Array):
-                raise TypeError(f"Input must be a JAX Array, got {type(x)}")
-
-            # Check input is real-valued
-            if not jax.numpy.issubdtype(x.dtype, jax.numpy.floating):
-                raise TypeError(f"Input must be real-valued, got dtype {x.dtype}")
-
-            # Validate shape
-            if x.ndim < 2:
-                raise ValueError(
-                    f"Input must have at least 2 dimensions (channels + spatial), got {x.ndim}"
-                )
-
-            # Check channel dimension
-            if x.shape[0] != self.in_channels:
-                raise ValueError(
-                    f"Input must have {self.in_channels} channels, got {x.shape[0]}"
-                )
-
-            # Check spatial dimensions match n_modes
-            if len(x.shape[1:]) != len(self.n_modes):
-                raise ValueError(
-                    f"Number of spatial dimensions {len(x.shape[1:])} does not match "
-                    f"number of modes {len(self.n_modes)}"
-                )
 
         x = self.lift_layer(x)
         for layer in self.layers:

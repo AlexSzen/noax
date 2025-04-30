@@ -93,6 +93,10 @@ def test_fourier_layer_input_validation(rng_key):
         x = jnp.ones((2, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
         layer(x)
 
+    with pytest.raises(AssertionError):
+        x = jnp.ones((2, 32, 32, 32))  # Wrong number of spatial dimensions (3D vs 2D)
+        layer(x)
+
 
 def test_fourier_layer_output_values(rng_key):
     """Test if output values are reasonable and not all zeros or infinity."""
@@ -108,7 +112,7 @@ def test_fourier_layer_output_values(rng_key):
         n_modes=n_modes,
         use_bias_conv=use_bias_conv,
         use_bias_skip=use_bias_skip,
-        activation=jax.nn.relu,
+        activation=jax.nn.gelu,
         key=rng_key,
     )
     x = jnp.ones((in_channels, 32, 32))
@@ -116,6 +120,7 @@ def test_fourier_layer_output_values(rng_key):
 
     assert not jnp.any(jnp.isnan(y))
     assert not jnp.any(jnp.isinf(y))
+    assert jnp.any(y != 0)
 
 
 def test_fourier_layer_bias(rng_key):

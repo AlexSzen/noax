@@ -74,11 +74,15 @@ def test_spectral_conv_1d_input_validation(rng_key):
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 3))  # Spatial dim too small
+        x = jnp.ones((2, 32), dtype=jnp.complex64)  # Complex input not allowed
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 32), dtype=jnp.complex64)  # Complex input not allowed
+        x = jnp.ones((2, 32, 32))  # Wrong number of spatial dimensions (2D vs 1D)
+        conv(x)
+
+    with pytest.raises(AssertionError):
+        x = jnp.ones((2, 3))  # Spatial dim too small
         conv(x)
 
 
@@ -204,11 +208,15 @@ def test_spectral_conv_2d_input_validation(rng_key):
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 6, 6))  # Spatial dims too small
+        x = jnp.ones((2, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
+        x = jnp.ones((2, 32, 32, 32))  # Wrong number of spatial dimensions (3D vs 2D)
+        conv(x)
+
+    with pytest.raises(AssertionError):
+        x = jnp.ones((2, 6, 6))  # Spatial dims too small
         conv(x)
 
 
@@ -217,7 +225,7 @@ def test_spectral_conv_2d_output_values(rng_key):
     in_channels = 1
     out_channels = 1
     n_modes = [4, 4]
-    use_bias = False
+    use_bias = True
 
     conv = SpectralConvND(
         in_channels=in_channels,
@@ -333,11 +341,15 @@ def test_spectral_conv_3d_input_validation(rng_key):
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 6, 6, 6))  # Spatial dims too small
+        x = jnp.ones((2, 16, 16, 16), dtype=jnp.complex64)  # Complex input not allowed
         conv(x)
 
     with pytest.raises(AssertionError):
-        x = jnp.ones((2, 32, 32, 32), dtype=jnp.complex64)  # Complex input not allowed
+        x = jnp.ones((2, 16, 16))  # Wrong number of spatial dimensions (2D vs 3D)
+        conv(x)
+
+    with pytest.raises(AssertionError):
+        x = jnp.ones((2, 6, 6, 6))  # Spatial dims too small
         conv(x)
 
 
