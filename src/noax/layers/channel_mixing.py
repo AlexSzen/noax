@@ -11,9 +11,9 @@ The implementation includes:
 2. ChannelMixingMLP: A multi-layer perceptron operating on channels
 """
 
+from typing import List, Optional, Callable
 import jax
 import jax.numpy as jnp
-from typing import List, Optional, Callable
 import equinox as eqx
 from jaxtyping import Array, Float, PRNGKeyArray
 

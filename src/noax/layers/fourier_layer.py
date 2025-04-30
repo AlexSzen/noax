@@ -7,9 +7,9 @@ The implementation follows the principles from:
 [1] Li et al. "Fourier Neural Operator for Parametric Partial Differential Equations"
 """
 
+from typing import Tuple, Callable
 import jax
 import equinox as eqx
-from typing import List, Tuple, Callable
 from jaxtyping import Array, Float, PRNGKeyArray
 from noax.layers.spectral_conv import SpectralConvND
 from noax.layers.channel_mixing import ChannelMixingLinear

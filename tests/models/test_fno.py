@@ -5,7 +5,6 @@ import jax
 import jax.numpy as jnp
 import equinox as eqx
 from noax.models.fno import FNO
-import numpy as np
 
 
 @pytest.fixture

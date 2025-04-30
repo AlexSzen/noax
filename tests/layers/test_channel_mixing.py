@@ -3,7 +3,6 @@
 import pytest
 import jax
 import jax.numpy as jnp
-import equinox as eqx
 from noax.layers.channel_mixing import ChannelMixingLinear, ChannelMixingMLP
 
 

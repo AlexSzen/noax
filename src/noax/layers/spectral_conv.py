@@ -9,10 +9,10 @@ The implementation follows the principles from:
 [2] Kossaifi et al. "Multi-Grid Tensorized Fourier Neural Operator for High Resolution PDEs"
 """
 
+from typing import List, Optional, Tuple, Any
 import numpy as np
 import jax
 import jax.numpy as jnp
-from typing import List, Optional, Tuple, Any
 import equinox as eqx
 from jaxtyping import Array, Float, Complex, PRNGKeyArray
 
